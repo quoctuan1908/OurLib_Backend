@@ -1,14 +1,29 @@
 const multer = require('multer');
 
-const storage = multer.diskStorage({
+const storage1 = multer.diskStorage({
     destination: (req,file,cb)=> {
         cb(null,'./public/data/uploads/')
     },
     filename: (req,file,cb)=> {
-        cb(null, `${file.fieldname}-${Date.now()}`);
+        cb(null, `${file.fieldname}-${Date.now()}-${file.originalname}`);
     }
 })
 
-const uploads = multer({storage: storage})
 
-module.exports = uploads;
+const storage2 = multer.diskStorage({
+    destination: (req,file,cb)=> {
+        cb(null,'./public/data/uploads/avatar')
+    },
+    filename: (req,file,cb)=> {
+        cb(null, `${file.fieldname}-${Date.now()}-${file.originalname}`);
+    }
+})
+
+
+const uploadsBook = multer({storage: storage1})
+const uploadsAvatar = multer({storage: storage2})
+
+module.exports = {
+    uploadsBook,
+    uploadsAvatar
+};

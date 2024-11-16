@@ -20,8 +20,8 @@ const ReaderModel = mongoose.model('docgias', new Schema({
         default: '1-1-2000'
     },
     phai: {
-        type: Boolean,
-        default: true
+        type: String,
+        default: 'other'
     },
     diachi: {
         type: String

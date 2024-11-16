@@ -45,7 +45,10 @@ class ReaderService extends CRUDService {
         if (!user) {
             return {statusCode: 401,message:"User isn't existed."};
         }
+        console.log(user)
         const isCorrectPassword = await comparePassword(password, user.matkhau);
+
+        console.log(isCorrectPassword)
         if (!isCorrectPassword) {
             return {statusCode: 401, message:"Wrong password"};
         }
@@ -54,11 +57,12 @@ class ReaderService extends CRUDService {
 
     async updateById(data) {
         console.log(data)
-        const document = await encryptPassword(data.matkhau);
-        if (document.statusCode == 200) {
-            data.matkhau = document.password;
-            return await ReaderModel.findOneAndUpdate({"_id":data._id}, data, {returnOriginal: false})
-        }
+        return await ReaderModel.findOneAndUpdate({"_id":data._id}, data, {returnOriginal: false})
+    }
+
+    async changePassword(id, newPass) {
+        const document = await encryptPassword(newPass)
+        return await ReaderModel.findOneAndUpdate({"_id":id}, {matkhau: document.password}, {returnOriginal: false})
     }
 }
 

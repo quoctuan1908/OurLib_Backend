@@ -3,6 +3,7 @@ const PublisherService = require("../service/publisher.service");
 
 exports.create = async (req, res, next) => {
     try {
+        console.log(req.body)
         const publisherService = new PublisherService();
         const document = await publisherService.create(req.body, "PL");
         if (!document) {
@@ -54,7 +55,7 @@ exports.update = async (req, res, next) => {
 exports.delete = async (req, res, next) => {
     try {
         const publisherService = new PublisherService();
-        const document = await publisherService.deleteByFilter({manxb: req.params.id});
+        const document = await publisherService.deleteByFilter({_id: req.params.id});
         if (!document) {
             return next(
                 new ApiError(404, 'Publisher is not found.')

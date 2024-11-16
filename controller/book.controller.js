@@ -61,17 +61,18 @@ exports.delete = async (req, res, next) => {
     try {
         const bookService = new BookService();
         const result = await bookService.deleteById(req.params.id);
+        const book = await bookService.findOne(req.params.id)
         if (!result) {
             return next(
                 new ApiError(404, "Book not found")
             )
         }
-        await fs.unlink(req.file.path)
-        return res.send("Deleted the book.")
+        //await fs.unlink(book.image)
+        return res.send(result)
     } catch (err) {
         console.log(err);
         return next(
-            new ApiError(500, "Cannot add this book into database.")
+            new ApiError(500, "Cannot delete this book.")
         )
     }
 }

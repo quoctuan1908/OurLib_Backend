@@ -5,10 +5,10 @@ const config = require("../config");
 
 
 
-exports.delete = async (req, res) => {
+exports.delete = async (req, res, next) => {
     try {
         const readerService = new ReaderService();
-        const result = await readerService.delete(req.params.id);
+        const result = await readerService.deleteById(req.params.id);
         if (!result) {
             return res.send("The reader is not found");
         }
@@ -16,7 +16,7 @@ exports.delete = async (req, res) => {
     } catch (err) {
         console.log(err);
         return next(
-            ApiError(500, "Cannot add this reader into database.")
+            new ApiError(500, "Cannot add this reader into database.")
         )
     }
 }
@@ -97,6 +97,7 @@ exports.login = async (req,res,next) => {
             "id": user.data._id,
             "token": token,
             "role":user.data.role,
+            "avatar":user.data.anhdaidien,
             "statusCode": user.statusCode,
             "message": user.message,
         })
@@ -126,8 +127,14 @@ exports.register = async (req, res,next) => {
 }
 exports.update = async (req, res, next) => {
     try {
+        console.log(req.file)
+        console.log(req.body)
+        let userData = JSON.parse(req.body.userData)
+        if (req.file) {
+            userData.anhdaidien = req.file.filename
+        }
         const readerService = new ReaderService();
-        const update = await readerService.updateById(req.body);
+        const update = await readerService.updateById(userData);
         if (update == null) {
             return res.send("Reader not found");
         }
@@ -135,8 +142,25 @@ exports.update = async (req, res, next) => {
     } catch (err) {
         console.log(err);
         return next(
-            ApiError(500, "Cannot add this reader into database.")
+            new ApiError(500, "Cannot update this reader.")
         )
     }
 }
 
+exports.changePassword = async (req, res, next) => {
+    try {
+        const readerService = new ReaderService();
+        const testLogin = await readerService.login(req.body.username, req.body.old);
+        if (testLogin.statusCode != 200) {
+            return res.send(testLogin)
+        }
+        const result = await readerService.changePassword(req.params.id, req.body.new);
+
+        return res.send(result);
+    } catch (err) {
+        console.log(err);
+        return next(
+            new ApiError(500, "Cannot update password.")
+        )
+    }
+}
