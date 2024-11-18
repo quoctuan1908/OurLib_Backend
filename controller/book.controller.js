@@ -7,7 +7,7 @@ const fs = require('fs')
 exports.addBook = async (req, res,next) => {
     try {
         const bookService = new BookService();
-        const document = await bookService.createWithImage(req.body.data,req.file.originalname, "BK");
+        const document = await bookService.createWithImage(req.body.data,req.file.filename, "BK");
         if (!document) {
             return res.send("The book is already existed.");
         }

@@ -71,8 +71,9 @@ exports.findAll = async (req, res, next) => {
     try {
         const booksTrackingService = new BooksTrackingService();
         let result;
-        if (req.query.masach) {
+        if (req.query.masach || req.query.madocgia) {
             result = await booksTrackingService.findAllByFilter(req.query);
+            console.log("Hello heerre")
         } else {
             result = await booksTrackingService.findAll();
         }
@@ -92,7 +93,7 @@ exports.findOne = async (req, res,next) => {
     } catch (err) {
         console.log(err);
         return next(
-            new ApiError(500, "Cannot add this book into database.")
+            new ApiError(500, "Cannot find requests database.")
         )
     }
 }
